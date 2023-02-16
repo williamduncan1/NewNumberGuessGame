@@ -1,0 +1,140 @@
+/**
+ * William Duncan
+ * Date: 1/20/22
+ * This program is a guessing game named "guess the super duper secret number" where you will guess the super duper secret number. I added error checking and classes.
+ */
+
+import java.util.Scanner;
+import java.util.Random;
+import java.util.ArrayList;
+public class NumberGuessGame {
+
+    private int secret;
+    private int numGuesses;
+    ArrayList<Integer> guesses;
+
+    public NumberGuessGame(int low, int high){
+        //Generate the random secret number in the range
+        Random rnd = new Random();
+        secret = rnd.nextInt(high - low) + low;
+        numGuesses = 0;
+        guesses= new ArrayList<>();
+    }
+
+    public int getSecret(){
+        return secret;
+    }
+
+    public int getNumGuesses(){
+        return numGuesses;
+    }
+
+    public void incrementNumGuesses(){
+        numGuesses++;
+    }
+
+    public void addGuess(int guess){
+        guesses.add(guess);
+    }
+
+
+    public boolean wasGuessAlreadymade(int guess){
+        if (guesses.indexOf(guess) != -1){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static boolean isNumber(String num){
+        try {
+           int inum = Integer.parseInt(num);
+           return true;
+        }
+        catch (NumberFormatException e){
+            return false;
+        }
+
+    }
+    public static void main(String[] args){
+
+
+        Scanner in = new Scanner(System.in);
+        int low, high;
+
+        //Loop while valid range was not entered
+        while (true){
+            System.out.println("Please enter the lowest number of your range:");
+            low = in.nextInt();
+            System.out.println("Please enter the highest number of your range:");
+            high = in.nextInt();
+
+            if (high > low) break;
+            else System.out.println("This is very sadly not in your range. Please try again.");
+        }
+
+        NumberGuessGame game = new NumberGuessGame(low, high);
+
+
+        //Get the first guess
+        String strGuess;
+        in.nextLine();
+        while (true) {
+            System.out.println("Please enter your very smart guess ");
+            strGuess = in.nextLine();
+            if (isNumber(strGuess)) break;
+            else System.out.println("You have to enter a number...");
+        }
+
+        int guess = Integer.parseInt(strGuess);
+
+        //game.addGuess(guess);
+        //guesses.add(guess);
+
+        if (guess < low || guess > high)
+            System.out.println("Your guess is out of range.");
+
+        //Loop while user didn't guess the number
+        while (guess != game.getSecret()){
+            if (game.getSecret() < guess)
+                System.out.println("The number is lower.");
+            else
+                System.out.println("The number is higher");
+
+
+            while (true) {
+                System.out.println("Please enter your guess: ");
+                strGuess = in.nextLine();
+                if (isNumber(strGuess)) break;
+                else System.out.println("You have to enter a number...");
+            }
+
+            guess = Integer.parseInt(strGuess);
+
+            guess = Integer.parseInt(strGuess);
+            if (guess < low || guess > high)
+                System.out.println("Your guess is out of range.");
+
+            //Check if this guess was made in the past
+            if (game.wasGuessAlreadymade(guess) ){
+                System.out.println("You already tried this number.");
+            }
+            else{
+                game.incrementNumGuesses();
+                game.addGuess(guess);
+            }
+        }
+
+        //user guessed the secret number.
+        if (guess == game.getSecret()) {
+            System.out.println("Congratulations, you won!!!");
+            System.out.println("You made only " + (game.getNumGuesses() +1) + " guesses.");
+        }
+
+
+    }
+
+
+}
+
